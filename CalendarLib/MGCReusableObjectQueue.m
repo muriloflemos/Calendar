@@ -99,14 +99,14 @@
 
 - (void)enqueueReusableObject:(id<MGCReusableObject>)object
 {
-	[[self.reusableObjectsSets objectForKey:object.reuseIdentifier]addObject:object];
+	[(NSMutableSet *)[self.reusableObjectsSets objectForKey:object.reuseIdentifier]addObject:object];
 }
 
 - (id<MGCReusableObject>)dequeueReusableObjectWithReuseIdentifier:(NSString *)identifier
 {
     id<MGCReusableObject> object = [[self.reusableObjectsSets objectForKey:identifier] anyObject];
     if (object) {
-		[[self.reusableObjectsSets objectForKey:identifier] removeObject:object];
+		[(NSMutableSet *)[self.reusableObjectsSets objectForKey:identifier] removeObject:object];
 		if ([object respondsToSelector:@selector(prepareForReuse)]) {
 			[object prepareForReuse];
 		}
