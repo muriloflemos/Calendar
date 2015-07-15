@@ -135,6 +135,7 @@
 @optional
 
 - (void)monthPlannerViewDidScroll:(MGCMonthPlannerView*)view;
+- (void)monthPlannerViewDidEndScrolling:(MGCMonthPlannerView*)view;
 - (BOOL)monthPlannerView:(MGCMonthPlannerView*)view shouldSelectEventAtIndex:(NSUInteger)index date:(NSDate*)date;
 - (void)monthPlannerView:(MGCMonthPlannerView*)view didSelectEventAtIndex:(NSUInteger)index date:(NSDate*)date;
 - (BOOL)monthPlannerView:(MGCMonthPlannerView*)view shouldDeselectEventAtIndex:(NSUInteger)index date:(NSDate*)date;

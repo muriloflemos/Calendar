@@ -63,7 +63,7 @@ typedef enum
 } CalendarViewScrollingDirection;
 
 
-@interface MGCMonthPlannerView () <UICollectionViewDataSource, MGCMonthPlannerViewLayoutDelegate, MGCEventsRowViewDelegate>
+@interface MGCMonthPlannerView () <UICollectionViewDataSource, UICollectionViewDelegate, MGCMonthPlannerViewLayoutDelegate, MGCEventsRowViewDelegate>
 
 @property (nonatomic, readonly) UICollectionView *eventsView;		// main view
 @property (nonatomic) CALayer *headerBorderLayer;					// header bottom border
@@ -1256,6 +1256,30 @@ typedef enum
 	if ([self.delegate respondsToSelector:@selector(monthPlannerViewDidScroll:)]) {
 		[self.delegate monthPlannerViewDidScroll:self];
 	}
+}
+
+#pragma mark - Scrolling
+
+- (void)scrollViewDidEndScrolling:(UIScrollView *)scrollView {
+    if ([self.delegate respondsToSelector:@selector(monthPlannerViewDidEndScrolling:)]) {
+        [self.delegate monthPlannerViewDidEndScrolling:self];
+    }
+}
+
+#pragma mark - UICollectionViewDelegate
+
+- (void)scrollViewDidEndDragging:(UIScrollView*)scrollView willDecelerate:(BOOL)decelerate {
+    if (!decelerate && !scrollView.decelerating) {
+        [self scrollViewDidEndScrolling:scrollView];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView*)scrollView {
+    [self scrollViewDidEndScrolling:scrollView];
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView*)scrollView {
+    [self scrollViewDidEndScrolling:scrollView];
 }
 
 @end
