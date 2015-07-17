@@ -35,7 +35,7 @@ static const CGFloat kCellSpacing = 2.;		// space around cells
 @interface MGCEventsRowView ()
 
 @property (nonatomic) NSMutableDictionary *cells;		// dictionary of event cells [ { indexPath (day, item) : cell }, ... ]
-@property (nonatomic) NSMutableArray *labels;			// array of "more events" UILabels
+@property (nonatomic) NSMutableArray *buttons;			// array of "more events" UIButton
 @property (nonatomic) NSMutableDictionary *eventsCount;	// cache of events count per day [ { day : count }, ... ]
 
 @end
@@ -49,7 +49,7 @@ static const CGFloat kCellSpacing = 2.;		// space around cells
 	{
         _cells = [[NSMutableDictionary alloc]initWithCapacity:25];
 		_itemHeight = 18;
-		_labels = [NSMutableArray array];
+		_buttons = [NSMutableArray array];
 		_dayWidth = 100;
 
 		self.contentSize = CGSizeMake(frame.size.width, 400);
@@ -205,15 +205,16 @@ static const CGFloat kCellSpacing = 2.;		// space around cells
 		NSUInteger hiddenCount = [[daysWithMoreEvents objectForKey:@(day)]unsignedIntegerValue];
 		if (hiddenCount)
 		{
-			UILabel *label = [[UILabel alloc]initWithFrame:CGRectNull];
-			label.text = [NSString stringWithFormat:NSLocalizedString(@"%lu more...", nil), (unsigned long)hiddenCount];
-			label.textColor = [UIColor grayColor];
-			label.textAlignment = NSTextAlignmentRight;
-			label.font = [UIFont systemFontOfSize:11];
-			label.frame = [self rectForCellWithRange:NSMakeRange(day, 1) line:self.maxVisibleLines - 1];
+			UIButton *moreButton = [[UIButton alloc]initWithFrame:CGRectNull];
+            [moreButton setTitle:[NSString stringWithFormat:NSLocalizedString(@"%lu more...", nil), (unsigned long)hiddenCount] forState:UIControlStateNormal];
+            [moreButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+            [moreButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentRight];
+			moreButton.titleLabel.font = [UIFont systemFontOfSize:11];
+			moreButton.frame = [self rectForCellWithRange:NSMakeRange(day, 1) line:self.maxVisibleLines - 1];
+            [moreButton addTarget:self action:@selector(onTapMoreButton:) forControlEvents:UIControlEventTouchUpInside];
 			
-			[self addSubview:label];
-			[self.labels addObject:label];
+			[self addSubview:moreButton];
+			[self.buttons addObject:moreButton];
 		}
 	}
 }
@@ -268,10 +269,10 @@ static const CGFloat kCellSpacing = 2.;		// space around cells
 	}
 	[self.cells removeAllObjects];
 	
-	for (UILabel *label in self.labels) {
-		[label removeFromSuperview];
+	for (UIButton *button in self.buttons) {
+		[button removeFromSuperview];
 	}
-	[self.labels removeAllObjects];
+	[self.buttons removeAllObjects];
 	
 	//NSLog(@"recycle %d cells", self.cells.count);
 }
@@ -351,6 +352,17 @@ static const CGFloat kCellSpacing = 2.;		// space around cells
 {
 	UIView *hitView = [super hitTest:point withEvent:event];
     return (hitView == self) ? nil : hitView;
+}
+
+#pragma mark - More button
+
+- (void)onTapMoreButton:(UIButton *)sender {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSIndexPath *lastIndexPath = [self.cells.allKeys lastObject];
+    if ([self.delegate respondsToSelector:@selector(eventsRowView:didTapMoreButtonAtDate:)]) {
+        NSDate *date = [calendar dateByAddingUnit:NSCalendarUnitDay value:lastIndexPath.section toDate:self.referenceDate options:0];
+        [self.delegate eventsRowView:self didTapMoreButtonAtDate:date];
+    }
 }
 
 @end

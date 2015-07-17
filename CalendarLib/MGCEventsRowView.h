@@ -50,6 +50,7 @@
 - (void)eventsRowView:(MGCEventsRowView*)view didDeselectCellAtIndexPath:(NSIndexPath*)indexPath;
 - (void)eventsRowView:(MGCEventsRowView*)view willDisplayCell:(MGCEventView*)cell forEventAtIndexPath:(NSIndexPath*)indexPath;
 - (void)eventsRowView:(MGCEventsRowView*)view didEndDisplayingCell:(MGCEventView*)cell forEventAtIndexPath:(NSIndexPath*)indexPath;
+- (void)eventsRowView:(MGCEventsRowView*)view didTapMoreButtonAtDate:(NSDate *)date;
 
 @end
 

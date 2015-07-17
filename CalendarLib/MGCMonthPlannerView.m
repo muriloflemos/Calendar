@@ -1220,6 +1220,12 @@ typedef enum
 	[self.reuseQueue enqueueReusableObject:cell];
 }
 
+- (void)eventsRowView:(MGCEventsRowView *)view didTapMoreButtonAtDate:(NSDate *)date {
+    if ([self.delegate respondsToSelector:@selector(monthPlannerView:didTapMoreButtonAtDate:)]) {
+        [self.delegate monthPlannerView:self didTapMoreButtonAtDate:date];
+    }
+}
+
 #pragma mark - MGCMonthPlannerViewLayoutDelegate
 
 - (NSUInteger)collectionView:(UICollectionView*)collectionView layout:(MGCMonthPlannerViewLayout*)layout columnForDayAtIndexPath:(NSIndexPath*)indexPath
