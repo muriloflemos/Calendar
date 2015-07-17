@@ -212,6 +212,7 @@ static const CGFloat kCellSpacing = 2.;		// space around cells
 			moreButton.titleLabel.font = [UIFont systemFontOfSize:11];
 			moreButton.frame = [self rectForCellWithRange:NSMakeRange(day, 1) line:self.maxVisibleLines - 1];
             [moreButton addTarget:self action:@selector(onTapMoreButton:) forControlEvents:UIControlEventTouchUpInside];
+            moreButton.tag = day;
 			
 			[self addSubview:moreButton];
 			[self.buttons addObject:moreButton];
@@ -358,9 +359,8 @@ static const CGFloat kCellSpacing = 2.;		// space around cells
 
 - (void)onTapMoreButton:(UIButton *)sender {
     NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSIndexPath *lastIndexPath = [self.cells.allKeys lastObject];
     if ([self.delegate respondsToSelector:@selector(eventsRowView:didTapMoreButtonAtDate:)]) {
-        NSDate *date = [calendar dateByAddingUnit:NSCalendarUnitDay value:lastIndexPath.section toDate:self.referenceDate options:0];
+        NSDate *date = [calendar dateByAddingUnit:NSCalendarUnitDay value:sender.tag toDate:self.referenceDate options:0];
         [self.delegate eventsRowView:self didTapMoreButtonAtDate:date];
     }
 }
